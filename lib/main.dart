@@ -34,6 +34,25 @@ class ConnectionTestScreen extends StatelessWidget {
         email: 'teststudent1@alustudent.com',
         password: 'password123',
       );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Created: ${user.fullName}')));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    }
+  }
+
+  Future<void> _testStartupSignUp(BuildContext context) async {
+    final authRepo = AuthRepository();
+    try {
+      final user = await authRepo.signUpStartupOwner(
+        fullName: 'Test Founder',
+        startupName: 'Test Ventures Inc',
+        email: 'testfounder1@aluedu.com',
+        password: 'password123',
+      );
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(
         context,
@@ -51,12 +70,25 @@ class ConnectionTestScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => _testSignUp(context),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF2DD4BF),
-          ),
-          child: const Text('Test Sign Up'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ElevatedButton(
+              onPressed: () => _testSignUp(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2DD4BF),
+              ),
+              child: const Text('Test Student Sign Up'),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _testStartupSignUp(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF38BDF8),
+              ),
+              child: const Text('Test Startup Sign Up'),
+            ),
+          ],
         ),
       ),
     );
