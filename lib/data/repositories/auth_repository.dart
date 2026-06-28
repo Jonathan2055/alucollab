@@ -7,7 +7,7 @@ class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  /// Creates athentication for user
+  // Creates athentication for user
   Future<UserModel> signUpStudent({
     required String fullName,
     required String studentId,
@@ -38,7 +38,7 @@ class AuthRepository {
     return newUser;
   }
 
-  /// Creates a Auth account for a startup owner
+  // Creates a Auth account for a startup owner
   Future<UserModel> signUpStartupOwner({
     required String fullName,
     required String startupName,
@@ -81,4 +81,31 @@ class AuthRepository {
 
     return newUser;
   }
+
+  // Logging in an existing user with email/password.
+  Future<UserModel> signIn({
+    required String email,
+    required String password,
+  }) async {
+    final credential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+
+    final uid = credential.user!.uid;
+    return getUserProfile(uid);
+  }
+
+  // Fetching full profile document
+  Future<UserModel> getUserProfile(String uid) async {
+    final doc = await _firestore.collection('users').doc(uid).get();
+    if (!doc.exists) {
+      throw Exception('No profile found for this account.');
+    }
+    return UserModel.fromSnapshot(doc);
+  }
+
+  Stream<User?> get authStateChanges => _auth.authStateChanges();
+
+  Future<void> signOut() => _auth.signOut();
 }
