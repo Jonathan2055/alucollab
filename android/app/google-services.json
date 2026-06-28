@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618061235772",
+    "project_id": "alucollab",
+    "storage_bucket": "alucollab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618061235772:android:5f4526a902ea0076eb2539",
+        "android_client_info": {
+          "package_name": "com.example.alucollab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC88wgjpsdJKiTVl8E7nDuas0T__MnnqkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
