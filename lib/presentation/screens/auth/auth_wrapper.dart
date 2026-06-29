@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/models/user_model.dart';
+import 'login_screen.dart';
 
 // this Decides what the user sees first(If it login or if it's dashbord)
 class AuthWrapper extends StatelessWidget {
@@ -13,14 +14,14 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder(
       stream: authRepo.authStateChanges,
       builder: (context, authSnapshot) {
-        // checking if a session exists 
+        // checking if a session exists
         if (authSnapshot.connectionState == ConnectionState.waiting) {
           return const _LoadingScreen();
         }
 
         // When no one logged in
         if (!authSnapshot.hasData) {
-          return const _PlaceholderScreen(label: 'LOGIN SCREEN');
+          return const LoginScreen();
         }
 
         // if someone is logged in. now fetch their role from Firestore
@@ -36,7 +37,7 @@ class AuthWrapper extends StatelessWidget {
             if (userSnapshot.hasError || !userSnapshot.hasData) {
               // Profile lookup failed, move  to Login screen
               authRepo.signOut();
-              return const _PlaceholderScreen(label: 'LOGIN SCREEN');
+              return const LoginScreen();
             }
 
             final user = userSnapshot.data!;
@@ -63,9 +64,7 @@ class _LoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Color(0xFF0F172A),
-      body: Center(
-        child: CircularProgressIndicator(color: Color(0xFF2DD4BF)),
-      ),
+      body: Center(child: CircularProgressIndicator(color: Color(0xFF2DD4BF))),
     );
   }
 }
@@ -82,7 +81,11 @@ class _PlaceholderScreen extends StatelessWidget {
       body: Center(
         child: Text(
           label,
-          style: const TextStyle(color: Color(0xFF2DD4BF), fontSize: 22, fontWeight: FontWeight.bold),
+          style: const TextStyle(
+            color: Color(0xFF2DD4BF),
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
