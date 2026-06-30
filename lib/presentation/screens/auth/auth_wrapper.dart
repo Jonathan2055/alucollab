@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../data/models/user_model.dart';
 import 'login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // this Decides what the user sees first(If it login or if it's dashbord)
 class AuthWrapper extends StatelessWidget {
@@ -79,13 +80,29 @@ class _PlaceholderScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0F172A),
       body: Center(
-        child: Text(
-          label,
-          style: const TextStyle(
-            color: Color(0xFF2DD4BF),
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                color: Color(0xFF2DD4BF),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.read<AuthProvider>().signOut(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF38BDF8),
+              ),
+              child: const Text(
+                'Sign Out',
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
         ),
       ),
     );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../core/constants/app_colors.dart';
+import 'signup_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart'
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,7 +16,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _authRepo = AuthRepository();
 
   bool _isLoading = false;
   bool _obscurePassword = true;
@@ -32,16 +34,15 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await _authRepo.signIn(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-      
+      await context.read<AuthProvider>().signIn(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(_friendlyError(e))),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_friendlyError(e))));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -51,7 +52,9 @@ class _LoginScreenState extends State<LoginScreen> {
   /// into something a user actually understands.
   String _friendlyError(Object e) {
     final msg = e.toString();
-    if (msg.contains('user-not-found') || msg.contains('wrong-password') || msg.contains('invalid-credential')) {
+    if (msg.contains('user-not-found') ||
+        msg.contains('wrong-password') ||
+        msg.contains('invalid-credential')) {
       return 'Incorrect email or password.';
     }
     if (msg.contains('too-many-requests')) {
@@ -74,11 +77,19 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Icon(Icons.terminal, color: AppColors.secondary, size: 48),
+                  const Icon(
+                    Icons.terminal,
+                    color: AppColors.secondary,
+                    size: 48,
+                  ),
                   const SizedBox(height: 16),
                   const Text(
                     'ALUCollab',
-                    style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   const Text(
@@ -96,7 +107,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.trim().isEmpty) {
                         return 'Email is required';
                       }
-                      final emailPattern = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                      final emailPattern = RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      );
                       if (!emailPattern.hasMatch(value.trim())) {
                         return 'Enter a valid email address';
                       }
@@ -112,10 +125,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: _inputDecoration('Secure Password').copyWith(
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: AppColors.neutral,
                         ),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
                     validator: (value) {
@@ -134,14 +151,46 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.secondary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                       child: _isLoading
                           ? const SizedBox(
-                              height: 20, width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black),
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.black,
+                              ),
                             )
-                          : const Text('Sign In', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                          : const Text(
+                              'Sign In',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const SignupScreen()),
+                      );
+                    },
+                    child: const Text.rich(
+                      TextSpan(
+                        text: "New to the ecosystem? ",
+                        style: TextStyle(color: AppColors.neutral),
+                        children: [
+                          TextSpan(
+                            text: 'Request Access',
+                            style: TextStyle(color: AppColors.secondary),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
