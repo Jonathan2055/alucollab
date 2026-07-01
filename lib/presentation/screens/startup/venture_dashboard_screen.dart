@@ -73,7 +73,7 @@ class _DashboardTab extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Hello, ${user?.fullName.split(' ').first ?? 'Founder'} 👋',
+                'Hello, ${user?.fullName.split(' ').first ?? 'Founder'}',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 20,

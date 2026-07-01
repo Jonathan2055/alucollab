@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
+import 'providers/opportunity_provider.dart';
 import 'presentation/screens/auth/auth_wrapper.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,7 +21,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        // We'll add OpportunityProvider, NotificationProvider etc. here later
+        ChangeNotifierProvider(create: (_) => OpportunityProvider()),
+        
       ],
       child: MaterialApp(
         title: 'ALUCollab',
