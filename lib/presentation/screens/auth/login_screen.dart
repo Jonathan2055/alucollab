@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../data/repositories/auth_repository.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../providers/auth_provider.dart';
 import 'signup_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart'
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -35,9 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       await context.read<AuthProvider>().signIn(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../data/repositories/auth_repository.dart';
+import 'package:provider/provider.dart';
 import '../../../data/models/user_model.dart';
+import '../../../data/repositories/auth_repository.dart';
+import '../../../providers/auth_provider.dart';
 import 'login_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import '../student/student_home_screen.dart';
+import '../startup/venture_dashboard_screen.dart';
+import '../admin/admin_dashboard_screen.dart';
 
 // this Decides what the user sees first(If it login or if it's dashbord)
 class AuthWrapper extends StatelessWidget {
@@ -45,11 +49,11 @@ class AuthWrapper extends StatelessWidget {
 
             switch (user.role) {
               case UserRole.admin:
-                return const _PlaceholderScreen(label: 'ADMIN COMMAND CENTER');
+                return const AdminDashboardScreen();
               case UserRole.startupOwner:
-                return const _PlaceholderScreen(label: 'VENTURE DASHBOARD');
+                return const VentureDashboardScreen();
               case UserRole.student:
-                return const _PlaceholderScreen(label: 'STUDENT HOME');
+                return const StudentHomeScreen();
             }
           },
         );

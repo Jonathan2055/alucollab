@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../data/repositories/auth_repository.dart';
+import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../providers/auth_provider.dart';
 
 enum SignupPersona { student, startup }
 
@@ -13,7 +14,6 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _authRepo = AuthRepository();
 
   SignupPersona _persona = SignupPersona.student;
   bool _isLoading = false;
@@ -46,14 +46,14 @@ class _SignupScreenState extends State<SignupScreen> {
 
     try {
       if (_persona == SignupPersona.student) {
-        await _authRepo.signUpStudent(
+        await context.read<AuthProvider>().signUpStudent(
           fullName: _fullNameController.text.trim(),
           studentId: _studentIdController.text.trim(),
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
       } else {
-        await _authRepo.signUpStartupOwner(
+        await context.read<AuthProvider>().signUpStartupOwner(
           fullName: _fullNameController.text.trim(),
           startupName: _startupNameController.text.trim(),
           email: _emailController.text.trim(),
