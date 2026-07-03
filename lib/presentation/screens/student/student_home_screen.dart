@@ -4,6 +4,10 @@ import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/opportunity_provider.dart';
 import '../../../data/models/opportunity_model.dart';
+import 'opportunity_detail_screen.dart';
+import 'my_applications_screen.dart';
+Rimport '../../../data/repositories/notification_repository.dart';
+
 
 class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
@@ -100,10 +104,7 @@ class _HomeTab extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(
-                Icons.notifications_none_rounded,
-                color: AppColors.neutral,
-              ),
+              _NotificationBell(),
             ],
           ),
           const SizedBox(height: 20),
@@ -207,9 +208,7 @@ class _SearchTab extends StatelessWidget {
 class _AppsTab extends StatelessWidget {
   const _AppsTab();
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text('My Applications', style: TextStyle(color: AppColors.neutral)),
-  );
+  Widget build(BuildContext context) => const MyApplicationsScreen();
 }
 
 class _ProfileTab extends StatelessWidget {
@@ -343,9 +342,11 @@ class _OpportunityCard extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // We'll wire this to the full Opportunity Detail screen next
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Opening ${opportunity.title}...')),
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        OpportunityDetailScreen(opportunity: opportunity),
+                  ),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -365,6 +366,56 @@ class _OpportunityCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _NotificationBell extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().currentUser;
+    if (user == null)
+      return const Icon(
+        Icons.notifications_none_rounded,
+        color: AppColors.neutral,
+      );
+
+    return StreamBuilder<int>(
+      stream: NotificationRepository().streamUnreadCount(user.uid),
+      builder: (context, snapshot) {
+        final count = snapshot.data ?? 0;
+        return Stack(
+          children: [
+            const Icon(
+              Icons.notifications_none_rounded,
+              color: AppColors.neutral,
+            ),
+            if (count > 0)
+              Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  width: 16,
+                  height: 16,
+                  decoration: const BoxDecoration(
+                    color: AppColors.secondary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '$count',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 9,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 }

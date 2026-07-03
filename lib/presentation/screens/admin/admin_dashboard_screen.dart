@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
+import 'pending_approvals_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -106,9 +107,7 @@ class _SearchTab extends StatelessWidget {
 class _ModerationTab extends StatelessWidget {
   const _ModerationTab();
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text('Moderation Feed', style: TextStyle(color: AppColors.neutral)),
-  );
+  Widget build(BuildContext context) => const PendingApprovalsScreen();
 }
 
 class _ProfileTab extends StatelessWidget {

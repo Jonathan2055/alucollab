@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../data/repositories/startup_repository.dart';
+import '../../../data/models/startup_model.dart';
+import 'manage_opportunities_screen.dart';
 
 class VentureDashboardScreen extends StatefulWidget {
   const VentureDashboardScreen({super.key});
@@ -118,13 +121,36 @@ class _SearchTab extends StatelessWidget {
 
 class _ManageTab extends StatelessWidget {
   const _ManageTab();
+
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text(
-      'Manage Opportunities',
-      style: TextStyle(color: AppColors.neutral),
-    ),
-  );
+  Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().currentUser;
+    if (user == null) return const SizedBox();
+
+    return FutureBuilder<StartupModel?>(
+      future: StartupRepository().getStartupByOwner(user.uid),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.secondary),
+          );
+        }
+        final startup = snapshot.data;
+        if (startup == null) {
+          return const Center(
+            child: Text(
+              'No startup found.',
+              style: TextStyle(color: AppColors.neutral),
+            ),
+          );
+        }
+        return ManageOpportunitiesScreen(
+          startupId: startup.id,
+          startupName: startup.name,
+        );
+      },
+    );
+  }
 }
 
 class _ProfileTab extends StatelessWidget {
