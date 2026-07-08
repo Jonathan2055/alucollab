@@ -19,191 +19,208 @@ class ManageOpportunitiesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final oppProvider = context.read<OpportunityProvider>();
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.secondary,
-        child: const Icon(Icons.add, color: Colors.black),
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => PostOpportunityScreen(
-              startupId: startupId,
-              startupName: startupName,
-            ),
-          ),
-        ),
-      ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Manage Opportunities',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const Text(
-                'Review and update active listings.',
-                style: TextStyle(color: AppColors.neutral, fontSize: 13),
-              ),
-              const SizedBox(height: 20),
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            color: AppColors.background,
+            child: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Manage Opportunities',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const Text(
+                      'Review and update active listings.',
+                      style: TextStyle(color: AppColors.neutral, fontSize: 13),
+                    ),
+                    const SizedBox(height: 20),
 
-              Expanded(
-                child: StreamBuilder<List<OpportunityModel>>(
-                  stream: oppProvider.streamStartupOpportunities(startupId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.secondary,
+                    Expanded(
+                      child: StreamBuilder<List<OpportunityModel>>(
+                        stream: oppProvider.streamStartupOpportunities(
+                          startupId,
                         ),
-                      );
-                    }
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.secondary,
+                              ),
+                            );
+                          }
 
-                    final opps = snapshot.data ?? [];
+                          final opps = snapshot.data ?? [];
 
-                    if (opps.isEmpty) {
-                      return const Center(
-                        child: Text(
-                          'No listings yet. Tap + to post one.',
-                          style: TextStyle(color: AppColors.neutral),
-                        ),
-                      );
-                    }
+                          if (opps.isEmpty) {
+                            return const Center(
+                              child: Text(
+                                'No listings yet. Tap + to post one.',
+                                style: TextStyle(color: AppColors.neutral),
+                              ),
+                            );
+                          }
 
-                    return ListView.separated(
-                      itemCount: opps.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final opp = opps[index];
-                        return Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1E293B),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          return ListView.separated(
+                            itemCount: opps.length,
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 12),
+                            itemBuilder: (context, index) {
+                              final opp = opps[index];
+                              return Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF1E293B),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                            vertical: 3,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 3,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.background,
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                ),
+                                                child: Text(
+                                                  opp.category,
+                                                  style: const TextStyle(
+                                                    color: AppColors.secondary,
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                              ),
+                                              if (opp.isVerifiedVenture) ...[
+                                                const SizedBox(width: 6),
+                                                const Icon(
+                                                  Icons.verified,
+                                                  color: AppColors.secondary,
+                                                  size: 14,
+                                                ),
+                                                const Text(
+                                                  ' ALU Verified',
+                                                  style: TextStyle(
+                                                    color: AppColors.secondary,
+                                                    fontSize: 11,
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
                                           ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.background,
-                                            borderRadius: BorderRadius.circular(
-                                              6,
-                                            ),
-                                          ),
-                                          child: Text(
-                                            opp.category,
+                                          const SizedBox(height: 6),
+                                          Text(
+                                            opp.title,
                                             style: const TextStyle(
-                                              color: AppColors.secondary,
-                                              fontSize: 11,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                        ),
-                                        if (opp.isVerifiedVenture) ...[
-                                          const SizedBox(width: 6),
-                                          const Icon(
-                                            Icons.verified,
-                                            color: AppColors.secondary,
-                                            size: 14,
-                                          ),
-                                          const Text(
-                                            ' ALU Verified',
-                                            style: TextStyle(
-                                              color: AppColors.secondary,
-                                              fontSize: 11,
-                                            ),
+                                          const SizedBox(height: 4),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.people_outline,
+                                                color: AppColors.neutral,
+                                                size: 14,
+                                              ),
+                                              Text(
+                                                ' ${opp.applicantCount} Applicants',
+                                                style: const TextStyle(
+                                                  color: AppColors.neutral,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              const Icon(
+                                                Icons.schedule,
+                                                color: AppColors.neutral,
+                                                size: 14,
+                                              ),
+                                              Text(
+                                                ' ${opp.durationMonths}mo',
+                                                style: const TextStyle(
+                                                  color: AppColors.neutral,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
-                                      ],
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      opp.title,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Row(
+                                    Column(
                                       children: [
-                                        const Icon(
-                                          Icons.people_outline,
-                                          color: AppColors.neutral,
-                                          size: 14,
-                                        ),
-                                        Text(
-                                          ' ${opp.applicantCount} Applicants',
-                                          style: const TextStyle(
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.edit_outlined,
                                             color: AppColors.neutral,
-                                            fontSize: 12,
                                           ),
+                                          onPressed:
+                                              () {}, // edit flow — coming later
                                         ),
-                                        const SizedBox(width: 12),
-                                        const Icon(
-                                          Icons.schedule,
-                                          color: AppColors.neutral,
-                                          size: 14,
-                                        ),
-                                        Text(
-                                          ' ${opp.durationMonths}mo',
-                                          style: const TextStyle(
-                                            color: AppColors.neutral,
-                                            fontSize: 12,
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.delete_outline,
+                                            color: Colors.redAccent,
                                           ),
+                                          onPressed: () =>
+                                              _confirmDelete(context, opp),
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                              ),
-                              Column(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.edit_outlined,
-                                      color: AppColors.neutral,
-                                    ),
-                                    onPressed:
-                                        () {}, // edit flow — coming later
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.delete_outline,
-                                      color: Colors.redAccent,
-                                    ),
-                                    onPressed: () =>
-                                        _confirmDelete(context, opp),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 20, right: 20),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              backgroundColor: AppColors.secondary,
+              child: const Icon(Icons.add, color: Colors.black),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PostOpportunityScreen(
+                    startupId: startupId,
+                    startupName: startupName,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

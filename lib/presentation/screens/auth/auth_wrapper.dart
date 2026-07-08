@@ -4,11 +4,11 @@ import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
 import '../../../providers/auth_provider.dart';
 import 'login_screen.dart';
+import 'welcome_screen.dart';
 import '../student/student_home_screen.dart';
 import '../startup/venture_dashboard_screen.dart';
 import '../admin/admin_dashboard_screen.dart';
 
-// this Decides what the user sees first(If it login or if it's dashbord)
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -19,17 +19,14 @@ class AuthWrapper extends StatelessWidget {
     return StreamBuilder(
       stream: authRepo.authStateChanges,
       builder: (context, authSnapshot) {
-        // checking if a session exists
         if (authSnapshot.connectionState == ConnectionState.waiting) {
           return const _LoadingScreen();
         }
 
-        // When no one logged in
         if (!authSnapshot.hasData) {
-          return const LoginScreen();
+          return const WelcomeScreen();
         }
 
-        // if someone is logged in. now fetch their role from Firestore
         final uid = authSnapshot.data!.uid;
 
         return FutureBuilder<UserModel>(
@@ -40,12 +37,15 @@ class AuthWrapper extends StatelessWidget {
             }
 
             if (userSnapshot.hasError || !userSnapshot.hasData) {
-              // Profile lookup failed, move  to Login screen
               authRepo.signOut();
-              return const LoginScreen();
+              return const WelcomeScreen();
             }
 
             final user = userSnapshot.data!;
+
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.read<AuthProvider>().setCurrentUser(user);
+            });
 
             switch (user.role) {
               case UserRole.admin:
@@ -70,45 +70,6 @@ class _LoadingScreen extends StatelessWidget {
     return const Scaffold(
       backgroundColor: Color(0xFF0F172A),
       body: Center(child: CircularProgressIndicator(color: Color(0xFF2DD4BF))),
-    );
-  }
-}
-
-// Temporary stand-in so we can prove routing works before
-class _PlaceholderScreen extends StatelessWidget {
-  final String label;
-  const _PlaceholderScreen({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                color: Color(0xFF2DD4BF),
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () => context.read<AuthProvider>().signOut(),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF38BDF8),
-              ),
-              child: const Text(
-                'Sign Out',
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

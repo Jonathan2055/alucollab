@@ -69,7 +69,11 @@ class AuthProvider extends ChangeNotifier {
     _currentUser = await _authRepo.getUserProfile(uid);
     notifyListeners();
   }
-
+  void setCurrentUser(UserModel user) {
+      _currentUser = user;
+      notifyListeners();
+    
+  }
   Future<void> signOut() async {
     await _authRepo.signOut();
     _currentUser = null;
