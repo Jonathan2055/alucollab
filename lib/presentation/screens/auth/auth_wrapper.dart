@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:provider/provider.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/repositories/auth_repository.dart';
@@ -14,10 +15,8 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authRepo = AuthRepository();
-
-    return StreamBuilder(
-      stream: authRepo.authStateChanges,
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, authSnapshot) {
         if (authSnapshot.connectionState == ConnectionState.waiting) {
           return const _LoadingScreen();
@@ -30,21 +29,24 @@ class AuthWrapper extends StatelessWidget {
         final uid = authSnapshot.data!.uid;
 
         return FutureBuilder<UserModel>(
-          future: authRepo.getUserProfile(uid),
+          future: AuthRepository().getUserProfile(uid),
           builder: (context, userSnapshot) {
             if (userSnapshot.connectionState == ConnectionState.waiting) {
               return const _LoadingScreen();
             }
 
             if (userSnapshot.hasError || !userSnapshot.hasData) {
-              authRepo.signOut();
+              AuthRepository().signOut();
               return const WelcomeScreen();
             }
 
             final user = userSnapshot.data!;
 
+            // Set user in provider after frame renders
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.read<AuthProvider>().setCurrentUser(user);
+              if (context.mounted) {
+                context.read<AuthProvider>().setCurrentUser(user);
+              }
             });
 
             switch (user.role) {

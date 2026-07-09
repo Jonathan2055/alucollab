@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/opportunity_model.dart';
+import '../../../providers/theme_provider.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/opportunity_provider.dart';
 import '../shared/search_screen.dart';
@@ -29,7 +30,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: SafeArea(child: _tabs[_currentIndex]),
       bottomNavigationBar: _buildNavBar(),
     );
@@ -37,6 +38,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
 
   Widget _buildNavBar() {
     final user = context.watch<AuthProvider>().currentUser;
+    final surface = AppColors.surface(context);
 
     return StreamBuilder<QuerySnapshot>(
       stream: user == null
@@ -52,7 +54,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
         return BottomNavigationBar(
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
-          backgroundColor: const Color(0xFF1E293B),
+          backgroundColor: surface,
           selectedItemColor: AppColors.secondary,
           unselectedItemColor: AppColors.neutral,
           type: BottomNavigationBarType.fixed,
@@ -93,6 +95,8 @@ class _HomeTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
     final oppProvider = context.read<OpportunityProvider>();
+    final surface = AppColors.surface(context);
+    final textPrimary = AppColors.textPrimary(context);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
@@ -107,8 +111,8 @@ class _HomeTab extends StatelessWidget {
                 children: [
                   Text(
                     'Hello, ${user?.fullName.split(' ').first ?? 'Student'} ',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -130,7 +134,7 @@ class _HomeTab extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E293B),
+              color: surface,
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Row(
@@ -146,10 +150,10 @@ class _HomeTab extends StatelessWidget {
           ),
           const SizedBox(height: 24),
 
-          const Text(
+          Text(
             'Recommended',
             style: TextStyle(
-              color: Colors.white,
+              color: textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -218,6 +222,9 @@ class _OpportunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final surface = AppColors.surface(context);
+    final textPrimary = AppColors.textPrimary(context);
+
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -227,7 +234,7 @@ class _OpportunityCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E293B),
+          color: surface,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -239,7 +246,7 @@ class _OpportunityCard extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: AppColors.background,
+                    color: AppColors.background(context),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
@@ -256,8 +263,8 @@ class _OpportunityCard extends StatelessWidget {
                       children: [
                         Text(
                           opportunity.startupName,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColors.textPrimary(context),
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
                           ),
@@ -286,8 +293,8 @@ class _OpportunityCard extends StatelessWidget {
             const SizedBox(height: 12),
             Text(
               opportunity.title,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -312,7 +319,7 @@ class _OpportunityCard extends StatelessWidget {
                         vertical: 4,
                       ),
                       decoration: BoxDecoration(
-                        color: AppColors.background,
+                        color: AppColors.background(context),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -378,8 +385,11 @@ class _ProfileTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
+    final surface = AppColors.surface(context);
+    final textPrimary = AppColors.textPrimary(context);
+
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -389,7 +399,7 @@ class _ProfileTab extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: surface,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -411,8 +421,8 @@ class _ProfileTab extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       user?.fullName ?? 'Student',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: textPrimary,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -428,13 +438,39 @@ class _ProfileTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              _settingsTile(Icons.person_outline, 'Account Details'),
+              _settingsTile(context, Icons.person_outline, 'Account Details'),
               _settingsTile(
+                context,
                 Icons.notifications_none_outlined,
                 'Notification Center',
               ),
-              _settingsTile(Icons.shield_outlined, 'Privacy & Security'),
-              _settingsTile(Icons.help_outline_rounded, 'Support & Resources'),
+              _settingsTile(context, Icons.shield_outlined, 'Privacy & Security'),
+              _settingsTile(context, Icons.help_outline_rounded, 'Support & Resources'),
+              //  Theme toggle 
+              Consumer<ThemeProvider>(
+                builder: (context, themeProvider, _) => Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface(context),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.dark_mode_outlined, color: AppColors.neutral, size: 20),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text('Dark Mode', style: TextStyle(color: AppColors.textPrimary(context))),
+                      ),
+                      Switch(
+                        value: themeProvider.isDark,
+                        onChanged: (_) => themeProvider.toggleTheme(),
+                        activeColor: AppColors.secondary,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
@@ -448,6 +484,7 @@ class _ProfileTab extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
+
                   child: const Text(
                     'Sign Out',
                     style: TextStyle(fontWeight: FontWeight.bold),
@@ -461,12 +498,12 @@ class _ProfileTab extends StatelessWidget {
     );
   }
 
-  Widget _settingsTile(IconData icon, String label) {
+  Widget _settingsTile(BuildContext context, IconData icon, String label) {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -474,7 +511,7 @@ class _ProfileTab extends StatelessWidget {
           Icon(icon, color: AppColors.neutral, size: 20),
           const SizedBox(width: 14),
           Expanded(
-            child: Text(label, style: const TextStyle(color: Colors.white)),
+            child: Text(label, style: TextStyle(color: AppColors.textPrimary(context))),
           ),
           const Icon(Icons.chevron_right, color: AppColors.neutral),
         ],

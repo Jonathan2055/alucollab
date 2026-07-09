@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/opportunity_model.dart';
-import '../../../providers/auth_provider.dart';
 import '../../../providers/opportunity_provider.dart';
 import 'post_opportunity_screen.dart';
 
@@ -23,7 +22,7 @@ class ManageOpportunitiesScreen extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            color: AppColors.background,
+            color: AppColors.background(context),
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(20),
@@ -72,7 +71,7 @@ class ManageOpportunitiesScreen extends StatelessWidget {
 
                           return ListView.separated(
                             itemCount: opps.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (_, _) =>
                                 const SizedBox(height: 12),
                             itemBuilder: (context, index) {
                               final opp = opps[index];
@@ -98,7 +97,7 @@ class ManageOpportunitiesScreen extends StatelessWidget {
                                                       vertical: 3,
                                                     ),
                                                 decoration: BoxDecoration(
-                                                  color: AppColors.background,
+                                                  color: AppColors.background(context),
                                                   borderRadius:
                                                       BorderRadius.circular(6),
                                                 ),

@@ -5,31 +5,36 @@ class OpportunityRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Streams ALL active opportunities and this powers the Student Home feed.
-  Stream<List<OpportunityModel>> streamActiveOpportunities() {
-    return _firestore
-        .collection('opportunities')
-        .where('isActive', isEqualTo: true)
-        .orderBy('createdAt', descending: true)
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map((doc) => OpportunityModel.fromSnapshot(doc))
-              .toList(),
-        );
-  }
+Stream<List<OpportunityModel>> streamActiveOpportunities() {
+  return _firestore
+      .collection('opportunities')
+      .where('isActive', isEqualTo: true)
+      .snapshots()
+      .map((snapshot) {
+        final opportunities = snapshot.docs
+            .map((doc) => OpportunityModel.fromSnapshot(doc))
+            .toList();
 
-  // Streams of opportunities belonging to one startup and this powers Manage screen.
+        opportunities.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+        return opportunities;
+      });
+}
+
+  // Streams opportunities belonging to one startup and powers the Manage screen.
+  // We sort locally to avoid needing a Firestore composite index.
   Stream<List<OpportunityModel>> streamStartupOpportunities(String startupId) {
     return _firestore
         .collection('opportunities')
         .where('startupId', isEqualTo: startupId)
-        .orderBy('createdAt', descending: true)
         .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
+        .map((snapshot) {
+          final opportunities = snapshot.docs
               .map((doc) => OpportunityModel.fromSnapshot(doc))
-              .toList(),
-        );
+              .toList();
+
+          opportunities.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return opportunities;
+        });
   }
 
   // Startup owner posts a new opportunity.

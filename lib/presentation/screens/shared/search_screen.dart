@@ -145,7 +145,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             Container(
                               width: 44, height: 44,
                               decoration: BoxDecoration(
-                                color: AppColors.background,
+                                color: AppColors.background(context),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(Icons.rocket_launch,
@@ -181,7 +181,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                               padding: const EdgeInsets.symmetric(
                                                   horizontal: 8, vertical: 2),
                                               decoration: BoxDecoration(
-                                                color: AppColors.background,
+                                                color: AppColors.background(context),
                                                 borderRadius: BorderRadius.circular(20),
                                               ),
                                               child: Text(s,

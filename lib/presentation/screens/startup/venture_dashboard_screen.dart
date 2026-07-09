@@ -6,6 +6,7 @@ import '../../../data/models/startup_model.dart';
 import '../../../data/repositories/opportunity_repository.dart';
 import '../../../data/repositories/startup_repository.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../providers/theme_provider.dart';
 import '../shared/search_screen.dart';
 import 'manage_opportunities_screen.dart';
 import 'verification_status_screen.dart';
@@ -30,12 +31,12 @@ class _VentureDashboardScreenState extends State<VentureDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: SafeArea(child: _tabs[_currentIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: AppColors.surface(context),
         selectedItemColor: AppColors.secondary,
         unselectedItemColor: AppColors.neutral,
         type: BottomNavigationBarType.fixed,
@@ -85,7 +86,7 @@ class _DashboardTab extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Hello, ${user.fullName.split(' ').first} 👋',
+                    'Hello, ${user.fullName.split(' ').first}',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -218,6 +219,7 @@ class _DashboardTab extends StatelessWidget {
                           children: [
                             Expanded(
                               child: _metricCard(
+                                context,
                                 'TALENT POOL',
                                 '$totalApplicants',
                                 'Total Applicants',
@@ -226,6 +228,7 @@ class _DashboardTab extends StatelessWidget {
                             const SizedBox(width: 12),
                             Expanded(
                               child: _metricCard(
+                                context,
                                 'LISTINGS',
                                 '${opps.length}',
                                 'Total Posted',
@@ -279,11 +282,13 @@ class _DashboardTab extends StatelessWidget {
     );
   }
 
-  Widget _metricCard(String label, String value, String subtitle) {
+  Widget _metricCard(BuildContext context, String label, String value, String subtitle) {
+    final textPrimary = AppColors.textPrimary(context);
+    final surface = AppColors.surface(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: surface,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -300,8 +305,8 @@ class _DashboardTab extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             value,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: textPrimary,
               fontSize: 28,
               fontWeight: FontWeight.bold,
             ),
@@ -365,7 +370,7 @@ class _ProfileTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -375,7 +380,7 @@ class _ProfileTab extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: AppColors.surface(context),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -397,8 +402,8 @@ class _ProfileTab extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       user?.fullName ?? 'Founder',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: AppColors.textPrimary(context),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -411,6 +416,31 @@ class _ProfileTab extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+              //  Theme toggle 
+              Consumer<ThemeProvider>(
+                builder: (context, themeProvider, _) => Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface(context),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.dark_mode_outlined, color: AppColors.neutral, size: 20),
+                      const SizedBox(width: 14),
+                      const Expanded(
+                        child: Text('Dark Mode', style: TextStyle(color: Colors.white)),
+                      ),
+                      Switch(
+                        value: themeProvider.isDark,
+                        onChanged: (_) => themeProvider.toggleTheme(),
+                        activeColor: AppColors.secondary,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

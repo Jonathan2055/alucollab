@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../providers/theme_provider.dart';
 import '../shared/search_screen.dart';
+import 'user_management_screen.dart';
 import 'pending_approvals_screen.dart';
 import 'moderation_feed_screen.dart';
 
@@ -17,22 +19,28 @@ class AdminDashboardScreen extends StatefulWidget {
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _tabs = const [
-    _CommandCenterTab(),
-    _SearchTab(),
-    _ApprovalsTab(),
-    _ProfileTab(),
-  ];
+  void _switchTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final tabs = [
+      _CommandCenterTab(onSwitchTab: _switchTab),
+      const _SearchTab(),
+      const _ApprovalsTab(),
+      const _ProfileTab(),
+    ];
+
     return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(child: _tabs[_currentIndex]),
+      backgroundColor: AppColors.background(context),
+      body: SafeArea(child: tabs[_currentIndex]),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (i) => setState(() => _currentIndex = i),
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: AppColors.surface(context),
         selectedItemColor: AppColors.secondary,
         unselectedItemColor: AppColors.neutral,
         type: BottomNavigationBarType.fixed,
@@ -60,38 +68,43 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
 }
 
 class _CommandCenterTab extends StatelessWidget {
-  const _CommandCenterTab();
+  final ValueChanged<int> onSwitchTab;
+  const _CommandCenterTab({required this.onSwitchTab});
 
   @override
   Widget build(BuildContext context) {
+    final surface = AppColors.surface(context);
+    final textPrimary = AppColors.textPrimary(context);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header ──────────────────────────────────────────────
+          //  Header 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'Admin Command\nCenter',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: textPrimary,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Icon(Icons.notifications_none_rounded, color: AppColors.neutral),
+              const Icon(Icons.notifications_none_rounded, color: AppColors.neutral),
             ],
           ),
           const SizedBox(height: 20),
 
-          // ── Live stat cards ──────────────────────────────────────
+          //  Live stat cards 
           StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance.collection('users').snapshots(),
             builder: (context, usersSnap) {
               final userCount = usersSnap.data?.docs.length ?? 0;
               return _statCard(
+                context,
                 'TOTAL USERS',
                 '$userCount',
                 '+4 from last month',
@@ -108,6 +121,7 @@ class _CommandCenterTab extends StatelessWidget {
             builder: (context, oppSnap) {
               final count = oppSnap.data?.docs.length ?? 0;
               return _statCard(
+                context,
                 'LIVE POSTS',
                 '$count',
                 '12 scheduled for today',
@@ -124,6 +138,7 @@ class _CommandCenterTab extends StatelessWidget {
             builder: (context, startupSnap) {
               final count = startupSnap.data?.docs.length ?? 0;
               return _statCard(
+                context,
                 'PENDING VERIFICATIONS',
                 '$count',
                 'Critical action required',
@@ -134,7 +149,7 @@ class _CommandCenterTab extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          // ── Quick actions ────────────────────────────────────────
+          //  Quick actions 
           _actionTile(
             context,
             icon: Icons.flag_outlined,
@@ -150,7 +165,7 @@ class _CommandCenterTab extends StatelessWidget {
             icon: Icons.verified_outlined,
             title: 'Verification Queue',
             subtitle: 'Ventures awaiting approval',
-            onTap: () {},
+            onTap: () => onSwitchTab(2),
           ),
           const SizedBox(height: 10),
           _actionTile(
@@ -158,25 +173,30 @@ class _CommandCenterTab extends StatelessWidget {
             icon: Icons.manage_accounts_outlined,
             title: 'User Management',
             subtitle: 'Manage ecosystem users',
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const UserManagementScreen()),
+            ),
           ),
           const SizedBox(height: 20),
 
-          // ── Critical verifications table ─────────────────────────
+          //  Critical verifications table 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Text(
                 'Critical Verifications',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: textPrimary,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Text(
-                'View All Queue',
-                style: TextStyle(color: AppColors.secondary, fontSize: 12),
+              GestureDetector(
+                onTap: () => onSwitchTab(2),
+                child: const Text(
+                  'View All Queue',
+                  style: TextStyle(color: AppColors.secondary, fontSize: 12),
+                ),
               ),
             ],
           ),
@@ -202,7 +222,7 @@ class _CommandCenterTab extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 10),
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1E293B),
+                      color: surface,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -248,16 +268,18 @@ class _CommandCenterTab extends StatelessWidget {
   }
 
   Widget _statCard(
+    BuildContext context,
     String label,
     String value,
     String subtitle,
     IconData icon, {
     bool highlight = false,
   }) {
+    final surface = AppColors.surface(context);
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: surface,
         borderRadius: BorderRadius.circular(12),
         border: highlight
             ? Border.all(color: Colors.redAccent.withOpacity(0.4))
@@ -313,12 +335,14 @@ class _CommandCenterTab extends StatelessWidget {
     required String subtitle,
     required VoidCallback onTap,
   }) {
+    final surface = AppColors.surface(context);
+    final textPrimary = AppColors.textPrimary(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E293B),
+          color: surface,
           borderRadius: BorderRadius.circular(12),
           border: const Border(
             left: BorderSide(color: AppColors.secondary, width: 3),
@@ -334,8 +358,8 @@ class _CommandCenterTab extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -376,7 +400,7 @@ class _ProfileTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -386,7 +410,7 @@ class _ProfileTab extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: AppColors.surface(context),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -403,8 +427,8 @@ class _ProfileTab extends StatelessWidget {
                     const SizedBox(height: 12),
                     Text(
                       user?.fullName ?? 'Admin',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: AppColors.textPrimary(context),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -417,6 +441,31 @@ class _ProfileTab extends StatelessWidget {
                       ),
                     ),
                   ],
+                ),
+              ),
+              //  Theme toggle 
+              Consumer<ThemeProvider>(
+                builder: (context, themeProvider, _) => Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface(context),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.dark_mode_outlined, color: AppColors.neutral, size: 20),
+                      const SizedBox(width: 14),
+                      const Expanded(
+                        child: Text('Dark Mode', style: TextStyle(color: Colors.white)),
+                      ),
+                      Switch(
+                        value: themeProvider.isDark,
+                        onChanged: (_) => themeProvider.toggleTheme(),
+                        activeColor: AppColors.secondary,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 24),

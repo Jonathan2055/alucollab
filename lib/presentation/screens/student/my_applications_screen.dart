@@ -55,6 +55,9 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
   @override
   Widget build(BuildContext context) {
     final user = context.watch<AuthProvider>().currentUser;
+    final surface = AppColors.surface(context);
+    final textPrimary = AppColors.textPrimary(context);
+
     if (user == null) return const SizedBox();
 
     return Column(
@@ -65,10 +68,10 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Track Your Journey',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: textPrimary,
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
@@ -92,7 +95,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                       decoration: BoxDecoration(
                         color: selected
                             ? AppColors.secondary
-                            : const Color(0xFF1E293B),
+                            : AppColors.surface(context),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -146,7 +149,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                       return Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B),
+                          color: surface,
                           borderRadius: BorderRadius.circular(12),
                           border: Border(
                             left: BorderSide(
@@ -161,7 +164,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                               width: 40,
                               height: 40,
                               decoration: BoxDecoration(
-                                color: AppColors.background,
+                                color: AppColors.background(context),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               child: const Icon(
@@ -184,8 +187,8 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                                   ),
                                   Text(
                                     app.opportunityTitle,
-                                    style: const TextStyle(
-                                      color: Colors.white,
+                                    style: TextStyle(
+                                      color: textPrimary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -229,7 +232,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1E293B),
+                      color: surface,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -238,10 +241,10 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
+                              Text(
                                 'Application Success Rate',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: textPrimary,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -301,10 +304,11 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
   }
 
   Widget _miniStat(IconData icon, String value, String label) {
+    final textPrimary = AppColors.textPrimary(context);
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: AppColors.surface(context),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -313,8 +317,8 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
           const SizedBox(height: 6),
           Text(
             value,
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),

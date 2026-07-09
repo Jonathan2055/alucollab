@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
 import 'providers/opportunity_provider.dart';
+import 'providers/theme_provider.dart';
 import 'presentation/screens/auth/auth_wrapper.dart';
 
 
@@ -22,12 +23,15 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => OpportunityProvider()),
-        
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: MaterialApp(
-        title: 'ALUCollab',
-        debugShowCheckedModeBanner: false,
-        home: const AuthWrapper(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) => MaterialApp(
+          title: 'ALUCollab',
+          debugShowCheckedModeBanner: false,
+          home: const AuthWrapper(),
+          theme: themeProvider.theme,
+        ),
       ),
     );
   }

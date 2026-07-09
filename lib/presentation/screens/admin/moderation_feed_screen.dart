@@ -18,9 +18,9 @@ class _ModerationFeedScreenState extends State<ModerationFeedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
 
-      backgroundColor: AppColors.background,  
+      backgroundColor: AppColors.background(context),  
       appBar: AppBar(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.of(context).pop(),
@@ -115,7 +115,7 @@ class _ModerationCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundColor: AppColors.background,
+                backgroundColor: AppColors.background(context),
                 child: const Icon(Icons.rocket_launch, color: AppColors.secondary, size: 14),
               ),
               const SizedBox(width: 8),
@@ -176,7 +176,7 @@ class _ModerationCard extends StatelessWidget {
                 .map((s) => Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
-                          color: AppColors.background,
+                          color: AppColors.background(context),
                           borderRadius: BorderRadius.circular(20)),
                       child: Text(s,
                           style:

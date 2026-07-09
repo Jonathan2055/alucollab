@@ -9,7 +9,7 @@ class PendingApprovalsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.background(context),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -169,7 +169,7 @@ class _StartupApprovalCard extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 22,
-                backgroundColor: AppColors.background,
+                backgroundColor: AppColors.background(context),
                 child: Text(
                   startup.name.isNotEmpty ? startup.name[0].toUpperCase() : 'V',
                   style: const TextStyle(
