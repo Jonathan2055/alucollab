@@ -43,7 +43,7 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('✅ Application submitted!')));
+      ).showSnackBar(const SnackBar(content: Text('Application submitted!')));
       Navigator.of(context).pop();
     } catch (e) {
       if (!mounted) return;
@@ -96,7 +96,7 @@ class _OpportunityDetailScreenState extends State<OpportunityDetailScreen> {
                   ),
                 )
               : const Text(
-                  'Apply Now 🚀',
+                  'Apply Now',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,

@@ -5,6 +5,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../data/models/opportunity_model.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/opportunity_provider.dart';
+import '../shared/search_screen.dart';
 import 'my_applications_screen.dart';
 import 'opportunity_detail_screen.dart';
 
@@ -83,7 +84,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   }
 }
 
-// ─── Home Tab ────────────────────────────────────────────────────────────────
+//  Home Tab 
 
 class _HomeTab extends StatelessWidget {
   const _HomeTab();
@@ -105,7 +106,7 @@ class _HomeTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hello, ${user?.fullName.split(' ').first ?? 'Student'} 👋',
+                    'Hello, ${user?.fullName.split(' ').first ?? 'Student'} ',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -209,7 +210,7 @@ class _HomeTab extends StatelessWidget {
   }
 }
 
-// ─── Opportunity Card ─────────────────────────────────────────────────────────
+//  Opportunity Card 
 
 class _OpportunityCard extends StatelessWidget {
   final OpportunityModel opportunity;
@@ -342,7 +343,7 @@ class _OpportunityCard extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  'Apply Now 🚀',
+                  'Apply Now',
                   style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
@@ -357,17 +358,12 @@ class _OpportunityCard extends StatelessWidget {
   }
 }
 
-// ─── Other Tabs ───────────────────────────────────────────────────────────────
+//  Other Tabs 
 
 class _SearchTab extends StatelessWidget {
   const _SearchTab();
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text(
-      'Search coming soon',
-      style: TextStyle(color: AppColors.neutral),
-    ),
-  );
+  Widget build(BuildContext context) => const SearchScreen();
 }
 
 class _AppsTab extends StatelessWidget {

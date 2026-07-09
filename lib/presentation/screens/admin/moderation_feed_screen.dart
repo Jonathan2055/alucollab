@@ -17,7 +17,17 @@ class _ModerationFeedScreenState extends State<ModerationFeedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      backgroundColor: AppColors.background,  
+      appBar: AppBar(
       backgroundColor: AppColors.background,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      title: const Text('Moderation Feed', style: TextStyle(color: Colors.white)),
+      elevation: 0,
+    ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -27,11 +37,6 @@ class _ModerationFeedScreenState extends State<ModerationFeedScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Moderation Feed',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                  const Text('Oversee and prune live internship opportunities.',
-                      style: TextStyle(color: AppColors.neutral, fontSize: 13)),
                   const SizedBox(height: 16),
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,

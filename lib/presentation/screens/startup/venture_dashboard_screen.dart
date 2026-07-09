@@ -6,6 +6,7 @@ import '../../../data/models/startup_model.dart';
 import '../../../data/repositories/opportunity_repository.dart';
 import '../../../data/repositories/startup_repository.dart';
 import '../../../providers/auth_provider.dart';
+import '../shared/search_screen.dart';
 import 'manage_opportunities_screen.dart';
 import 'verification_status_screen.dart';
 
@@ -61,7 +62,7 @@ class _VentureDashboardScreenState extends State<VentureDashboardScreen> {
   }
 }
 
-// ─── Dashboard Tab ────────────────────────────────────────────────────────────
+//  Dashboard Tab 
 
 class _DashboardTab extends StatelessWidget {
   const _DashboardTab();
@@ -110,7 +111,7 @@ class _DashboardTab extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // ── Verification status banner ──────────────────────────
+              //  Verification status banner 
               if (startup != null &&
                   startup.verificationStatus == VerificationStatus.pending)
                 _statusBanner(
@@ -163,7 +164,7 @@ class _DashboardTab extends StatelessWidget {
 
               const SizedBox(height: 8),
 
-              // ── Live metrics ────────────────────────────────────────
+              //  Live metrics 
               if (startup != null)
                 StreamBuilder<List<OpportunityModel>>(
                   stream: OpportunityRepository().streamStartupOpportunities(
@@ -315,17 +316,12 @@ class _DashboardTab extends StatelessWidget {
   }
 }
 
-// ─── Other Tabs ───────────────────────────────────────────────────────────────
+//  Other Tabs 
 
 class _SearchTab extends StatelessWidget {
   const _SearchTab();
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text(
-      'Search coming soon',
-      style: TextStyle(color: AppColors.neutral),
-    ),
-  );
+  Widget build(BuildContext context) => const SearchScreen();
 }
 
 class _ManageTab extends StatelessWidget {

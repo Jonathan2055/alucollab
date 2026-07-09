@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../providers/auth_provider.dart';
+import '../shared/search_screen.dart';
 import 'pending_approvals_screen.dart';
 import 'moderation_feed_screen.dart';
 
@@ -359,12 +360,7 @@ class _CommandCenterTab extends StatelessWidget {
 class _SearchTab extends StatelessWidget {
   const _SearchTab();
   @override
-  Widget build(BuildContext context) => const Center(
-    child: Text(
-      'Search coming soon',
-      style: TextStyle(color: AppColors.neutral),
-    ),
-  );
+  Widget build(BuildContext context) => const SearchScreen();
 }
 
 class _ApprovalsTab extends StatelessWidget {
