@@ -37,14 +37,17 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-    } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_friendlyError(e))));
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+      
+    Navigator.of(context).popUntil((route) => route.isFirst);
+  } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(_friendlyError(e))),
+    );
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
+  }
   }
 
   /// Firebase error codes are technical — translate the common ones

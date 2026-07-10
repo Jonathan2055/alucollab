@@ -61,14 +61,16 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       }
       // AuthWrapper's stream listener handles navigation automatically.
-    } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(_friendlyError(e))));
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } catch (e) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(_friendlyError(e))),
+    );
+  } finally {
+    if (mounted) setState(() => _isLoading = false);
+  }
   }
 
   String _friendlyError(Object e) {
