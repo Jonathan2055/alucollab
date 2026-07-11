@@ -263,8 +263,8 @@ class _CommandCenterTab extends StatelessWidget {
                         Expanded(
                           child: Text(
                             data['name'] ?? 'Unknown',
-                            style: const TextStyle(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: textPrimary,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -467,7 +467,7 @@ class _ProfileTab extends StatelessWidget {
               //  Theme toggle 
               Consumer<ThemeProvider>(
                 builder: (context, themeProvider, _) => Container(
-                  margin: const EdgeInsets.only(bottom: 10),
+                  margin: const EdgeInsets.only(top: 12, bottom: 10),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppColors.surface(context),
@@ -477,8 +477,8 @@ class _ProfileTab extends StatelessWidget {
                     children: [
                       const Icon(Icons.dark_mode_outlined, color: AppColors.neutral, size: 20),
                       const SizedBox(width: 14),
-                      const Expanded(
-                        child: Text('Dark Mode', style: TextStyle(color: Colors.white)),
+                      Expanded(
+                        child: Text('Dark Mode', style: TextStyle(color: AppColors.textPrimary(context))),
                       ),
                       Switch(
                         value: themeProvider.isDark,

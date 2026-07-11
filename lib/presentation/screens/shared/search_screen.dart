@@ -36,14 +36,14 @@ class _SearchScreenState extends State<SearchScreen> {
           //  Search bar 
           TextField(
             controller: _controller,
-            style: const TextStyle(color: Colors.white),
+            style: TextStyle(color: AppColors.textPrimary(context)),
             onChanged: (val) => setState(() => _query = val.toLowerCase()),
             decoration: InputDecoration(
               hintText: 'Search opportunities...',
-              hintStyle: const TextStyle(color: AppColors.neutral),
-              prefixIcon: const Icon(Icons.search, color: AppColors.neutral),
+              hintStyle: TextStyle(color: AppColors.textSecondary(context)),
+              prefixIcon: Icon(Icons.search, color: AppColors.textSecondary(context)),
               filled: true,
-              fillColor: const Color(0xFF1E293B),
+              fillColor: AppColors.surface(context),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
@@ -66,14 +66,18 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
-                      color: selected ? AppColors.secondary : const Color(0xFF1E293B),
+                      color: selected ? AppColors.secondary : AppColors.surface(context),
                       borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: AppColors.border(context)),
                     ),
-                    child: Text(_categories[i],
-                        style: TextStyle(
-                            color: selected ? Colors.black : AppColors.neutral,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600)),
+                    child: Text(
+                      _categories[i],
+                      style: TextStyle(
+                        color: selected ? Colors.black : AppColors.textPrimary(context),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 );
               },
@@ -137,8 +141,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B),
+                          color: AppColors.surface(context),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppColors.border(context)),
                         ),
                         child: Row(
                           children: [
@@ -159,8 +164,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                   Row(
                                     children: [
                                       Text(opp.startupName,
-                                          style: const TextStyle(
-                                              color: AppColors.neutral, fontSize: 12)),
+                                          style: TextStyle(
+                                              color: AppColors.textSecondary(context), fontSize: 12)),
                                       if (opp.isVerifiedVenture) ...[
                                         const SizedBox(width: 4),
                                         const Icon(Icons.verified,
@@ -169,8 +174,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                     ],
                                   ),
                                   Text(opp.title,
-                                      style: const TextStyle(
-                                          color: Colors.white,
+                                      style: TextStyle(
+                                          color: AppColors.textPrimary(context),
                                           fontWeight: FontWeight.bold)),
                                   const SizedBox(height: 4),
                                   Wrap(
@@ -185,8 +190,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 borderRadius: BorderRadius.circular(20),
                                               ),
                                               child: Text(s,
-                                                  style: const TextStyle(
-                                                      color: AppColors.neutral,
+                                                  style: TextStyle(
+                                                      color: AppColors.textSecondary(context),
                                                       fontSize: 10)),
                                             ))
                                         .toList(),
@@ -194,7 +199,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 ],
                               ),
                             ),
-                            const Icon(Icons.chevron_right, color: AppColors.neutral),
+                            Icon(Icons.chevron_right, color: AppColors.textSecondary(context)),
                           ],
                         ),
                       ),

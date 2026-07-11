@@ -97,10 +97,15 @@ class _SignupScreenState extends State<SignupScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  children: const [
-                    Icon(Icons.hub, color: AppColors.secondary),
-                    SizedBox(width: 8),
-                    Text(
+                  children: [
+                    Image.asset(
+                      'assets/images/alu_logo.png',
+                      width: 28,
+                      height: 28,
+                      fit: BoxFit.contain,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
                       'ALUCollab',
                       style: TextStyle(
                         color: Colors.white,

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
 import '../models/startup_model.dart';
 
+
 class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -67,7 +68,6 @@ class AuthRepository {
       verificationStatus: VerificationStatus.pending,
       createdAt: DateTime.now(),
     );
-
     // I used a batch write so both documents succeed or both fail
     final batch = _firestore.batch();
 
@@ -78,6 +78,23 @@ class AuthRepository {
     batch.set(startupRef, newStartup.toMap());
 
     await batch.commit();
+
+    // Notify all admins when a new startup registers (after commit)
+    final admins = await _firestore
+        .collection('users')
+        .where('role', isEqualTo: 'admin')
+        .get();
+
+    for (final admin in admins.docs) {
+      await _firestore.collection('notifications').add({
+        'userId': admin.id,
+        'title': '🚀 New Startup Registration',
+        'message': '$startupName has submitted for ALU verification.',
+        'type': 'verification',
+        'isRead': false,
+        'createdAt': Timestamp.now(),
+      });
+    }
 
     return newUser;
   }

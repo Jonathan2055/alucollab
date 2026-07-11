@@ -26,10 +26,10 @@ class WelcomeScreen extends StatelessWidget {
                       color: const Color(0xFF1E293B),
                       borderRadius: BorderRadius.circular(24),
                     ),
-                    child: const Icon(
-                      Icons.hub_rounded,
-                      color: AppColors.secondary,
-                      size: 48,
+                    padding: const EdgeInsets.all(18),
+                    child: Image.asset(
+                      'assets/images/alu_logo.png',
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -111,7 +111,7 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       child: const Text(
-                        'I am an Admin/Venture Lab Partner',
+                        'I am already a member',
                         style: TextStyle(color: Colors.white, fontSize: 14),
                       ),
                     ),

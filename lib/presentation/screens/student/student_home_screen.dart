@@ -485,9 +485,6 @@ class _ProfileTab extends StatelessWidget {
                 ),
               ),
 
-              _settingsTile(context, Icons.shield_outlined, 'Privacy & Security'),
-
-              _settingsTile(context, Icons.help_outline_rounded, 'Support & Resources'),
               //  Theme toggle 
               Consumer<ThemeProvider>(
                 builder: (context, themeProvider, _) => Container(

@@ -102,8 +102,8 @@ class _DashboardTab extends StatelessWidget {
                 children: [
                   Text(
                     'Hello, ${user.fullName.split(' ').first}',
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: AppColors.textPrimary(context),
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -218,7 +218,7 @@ class _DashboardTab extends StatelessWidget {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF1E293B),
+                            color: AppColors.surface(context),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Column(
@@ -235,15 +235,15 @@ class _DashboardTab extends StatelessWidget {
                               const SizedBox(height: 8),
                               Text(
                                 '${opps.where((o) => o.isActive).length}',
-                                style: const TextStyle(
-                                  color: Colors.white,
+                                style: TextStyle(
+                                  color: AppColors.textPrimary(context),
                                   fontSize: 40,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              const Text(
+                              Text(
                                 'Active Posts',
-                                style: TextStyle(color: AppColors.neutral),
+                                style: TextStyle(color: AppColors.textSecondary(context)),
                               ),
                             ],
                           ),
@@ -455,7 +455,7 @@ class _ProfileTab extends StatelessWidget {
               //  Theme toggle 
               Consumer<ThemeProvider>(
                 builder: (context, themeProvider, _) => Container(
-                  margin: const EdgeInsets.only(bottom: 10),
+                  margin: const EdgeInsets.only(top: 12, bottom: 10),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
                     color: AppColors.surface(context),
