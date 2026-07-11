@@ -4,6 +4,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../data/models/opportunity_model.dart';
 import '../../../providers/opportunity_provider.dart';
 import 'post_opportunity_screen.dart';
+import 'applicant_list_screen.dart';
 
 class ManageOpportunitiesScreen extends StatelessWidget {
   final String startupId;
@@ -170,12 +171,15 @@ class ManageOpportunitiesScreen extends StatelessWidget {
                                     Column(
                                       children: [
                                         IconButton(
-                                          icon: const Icon(
-                                            Icons.edit_outlined,
-                                            color: AppColors.neutral,
+                                          icon: const Icon(Icons.people_outline, color: AppColors.secondary),
+                                          onPressed: () => Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (_) => ApplicantListScreen(
+                                                opportunityId: opp.id,
+                                                opportunityTitle: opp.title,
+                                              ),
+                                            ),
                                           ),
-                                          onPressed:
-                                              () {}, // edit flow — coming later
                                         ),
                                         IconButton(
                                           icon: const Icon(

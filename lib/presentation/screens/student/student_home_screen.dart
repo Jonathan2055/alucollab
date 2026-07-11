@@ -6,9 +6,12 @@ import '../../../data/models/opportunity_model.dart';
 import '../../../providers/theme_provider.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/opportunity_provider.dart';
+import '../../../data/repositories/notification_repository.dart';
 import '../shared/search_screen.dart';
+import 'edit_profile_screen.dart';
 import 'my_applications_screen.dart';
 import 'opportunity_detail_screen.dart';
+import '../shared/notification_center_screen.dart';
 
 class StudentHomeScreen extends StatefulWidget {
   const StudentHomeScreen({super.key});
@@ -37,6 +40,7 @@ class _StudentHomeScreenState extends State<StudentHomeScreen> {
   }
 
   Widget _buildNavBar() {
+    
     final user = context.watch<AuthProvider>().currentUser;
     final surface = AppColors.surface(context);
 
@@ -123,9 +127,26 @@ class _HomeTab extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(
-                Icons.notifications_none_rounded,
-                color: AppColors.neutral,
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const NotificationCenterScreen(),
+                  ),
+                ),
+                child: StreamBuilder<int>(
+                  stream: NotificationRepository().streamUnreadCount(
+                    context.read<AuthProvider>().currentUser?.uid ?? '',
+                  ),
+                  builder: (context, snapshot) {
+                    final count = snapshot.data ?? 0;
+                    return Badge(
+                      isLabelVisible: count > 0,
+                      label: Text('$count'),
+                      child: const Icon(Icons.notifications_none_rounded,
+                          color: AppColors.neutral),
+                    );
+                  },
+                ),
               ),
             ],
           ),
@@ -438,13 +459,34 @@ class _ProfileTab extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 16),
-              _settingsTile(context, Icons.person_outline, 'Account Details'),
-              _settingsTile(
-                context,
-                Icons.notifications_none_outlined,
-                'Notification Center',
+              GestureDetector(
+                onTap: () {
+                  final user = context.read<AuthProvider>().currentUser;
+                  if (user == null) return;
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => EditProfileScreen(user: user),
+                    ),
+                  );
+                },
+                child: _settingsTile(context, Icons.person_outline, 'Account Details'),
               ),
+
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const NotificationCenterScreen(),
+                  ),
+                ),
+                child: _settingsTile(
+                  context,
+                  Icons.notifications_none_outlined,
+                  'Notification Center',
+                ),
+              ),
+
               _settingsTile(context, Icons.shield_outlined, 'Privacy & Security'),
+
               _settingsTile(context, Icons.help_outline_rounded, 'Support & Resources'),
               //  Theme toggle 
               Consumer<ThemeProvider>(
@@ -510,9 +552,8 @@ class _ProfileTab extends StatelessWidget {
         children: [
           Icon(icon, color: AppColors.neutral, size: 20),
           const SizedBox(width: 14),
-          Expanded(
-            child: Text(label, style: TextStyle(color: AppColors.textPrimary(context))),
-          ),
+          Expanded(child: Text(label,
+              style: TextStyle(color: AppColors.textPrimary(context)))),
           const Icon(Icons.chevron_right, color: AppColors.neutral),
         ],
       ),

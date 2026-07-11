@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../data/repositories/notification_repository.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/theme_provider.dart';
+import '../shared/notification_center_screen.dart';
 import '../shared/search_screen.dart';
 import 'user_management_screen.dart';
 import 'pending_approvals_screen.dart';
@@ -93,7 +95,26 @@ class _CommandCenterTab extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const Icon(Icons.notifications_none_rounded, color: AppColors.neutral),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                      builder: (_) => const NotificationCenterScreen()),
+                ),
+                child: StreamBuilder<int>(
+                  stream: NotificationRepository().streamUnreadCount(
+                    context.read<AuthProvider>().currentUser?.uid ?? '',
+                  ),
+                  builder: (context, snapshot) {
+                    final count = snapshot.data ?? 0;
+                    return Badge(
+                      isLabelVisible: count > 0,
+                      label: Text('$count'),
+                      child: const Icon(Icons.notifications_none_rounded,
+                          color: AppColors.neutral),
+                    );
+                  },
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 20),

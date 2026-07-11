@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../data/models/opportunity_model.dart';
 import '../../../data/models/startup_model.dart';
+import '../../../data/repositories/notification_repository.dart';
 import '../../../data/repositories/opportunity_repository.dart';
 import '../../../data/repositories/startup_repository.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/theme_provider.dart';
+import '../shared/notification_center_screen.dart';
 import '../shared/search_screen.dart';
 import 'manage_opportunities_screen.dart';
 import 'verification_status_screen.dart';
@@ -30,34 +32,47 @@ class _VentureDashboardScreenState extends State<VentureDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.watch<AuthProvider>().currentUser;
     return Scaffold(
       backgroundColor: AppColors.background(context),
       body: SafeArea(child: _tabs[_currentIndex]),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        backgroundColor: AppColors.surface(context),
-        selectedItemColor: AppColors.secondary,
-        unselectedItemColor: AppColors.neutral,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.grid_view_rounded),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search_rounded),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article_outlined),
-            label: 'Manage',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline_rounded),
-            label: 'Profile',
-          ),
-        ],
+      bottomNavigationBar: StreamBuilder<int>(
+        stream: user == null
+            ? Stream.value(0)
+            : NotificationRepository().streamUnreadCount(user.uid),
+        builder: (context, snapshot) {
+          final unreadCount = snapshot.data ?? 0;
+          return BottomNavigationBar(
+            currentIndex: _currentIndex,
+            onTap: (index) => setState(() => _currentIndex = index),
+            backgroundColor: AppColors.surface(context),
+            selectedItemColor: AppColors.secondary,
+            unselectedItemColor: AppColors.neutral,
+            type: BottomNavigationBarType.fixed,
+            items: [
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.grid_view_rounded),
+                label: 'Home',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.search_rounded),
+                label: 'Search',
+              ),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.article_outlined),
+                label: 'Manage',
+              ),
+              BottomNavigationBarItem(
+                label: 'Profile',
+                icon: Badge(
+                  isLabelVisible: unreadCount > 0,
+                  label: Text('$unreadCount'),
+                  child: const Icon(Icons.person_outline_rounded),
+                ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -93,9 +108,28 @@ class _DashboardTab extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const Icon(
-                    Icons.notifications_none_rounded,
-                    color: AppColors.neutral,
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const NotificationCenterScreen(),
+                      ),
+                    ),
+                    child: StreamBuilder<int>(
+                      stream: NotificationRepository().streamUnreadCount(
+                        user.uid,
+                      ),
+                      builder: (context, snapshot) {
+                        final count = snapshot.data ?? 0;
+                        return Badge(
+                          isLabelVisible: count > 0,
+                          label: Text('$count'),
+                          child: const Icon(
+                            Icons.notifications_none_rounded,
+                            color: AppColors.neutral,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),

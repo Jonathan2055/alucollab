@@ -228,7 +228,6 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  // ── Success rate card ──────────────────────────
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -241,21 +240,17 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Application Success Rate',
-                                style: TextStyle(
-                                  color: textPrimary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              Text('Application Success Rate',
+                                  style: TextStyle(
+                                      color: textPrimary,
+                                      fontWeight: FontWeight.bold)),
                               const SizedBox(height: 4),
-                              const Text(
-                                'Your profile is trending high\namong FinTech startups this week.',
-                                style: TextStyle(
-                                  color: AppColors.neutral,
-                                  fontSize: 12,
-                                ),
-                              ),
+                              Text(
+                                  all.isEmpty
+                                      ? 'Apply to opportunities to track your rate.'
+                                      : '${all.length} total • ${all.where((a) => a.status == ApplicationStatus.interview || a.status == ApplicationStatus.accepted).length} progressed',
+                                  style: const TextStyle(
+                                      color: AppColors.neutral, fontSize: 12)),
                             ],
                           ),
                         ),
@@ -263,7 +258,7 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                         Text(
                           all.isEmpty
                               ? '0%'
-                              : '${((all.where((a) => a.status == ApplicationStatus.accepted).length / all.length) * 100).toStringAsFixed(0)}%',
+                              : '${((all.where((a) => a.status == ApplicationStatus.accepted || a.status == ApplicationStatus.interview).length / all.length) * 100).toStringAsFixed(0)}%',
                           style: const TextStyle(
                             color: AppColors.secondary,
                             fontSize: 32,
@@ -278,17 +273,17 @@ class _MyApplicationsScreenState extends State<MyApplicationsScreen> {
                     children: [
                       Expanded(
                         child: _miniStat(
-                          Icons.visibility_outlined,
-                          '${all.length * 4}',
-                          'VIEWS',
+                          Icons.article_outlined,
+                          '${all.length}',
+                          'APPLICATIONS',
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _miniStat(
                           Icons.verified_outlined,
-                          '${all.where((a) => a.status != ApplicationStatus.applied).length}',
-                          'VERIFICATIONS',
+                          '${all.where((a) => a.status == ApplicationStatus.accepted).length}',
+                          'ACCEPTED',
                         ),
                       ),
                     ],

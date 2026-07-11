@@ -31,6 +31,11 @@ class UserModel {
   final String email;
   final UserRole role;
   final String? studentId;
+  final List<String> coreCompetencies;
+  final String bio;
+  final String? linkedinUrl;
+  final String? githubUrl;
+  final List<String> experience;
   final DateTime createdAt;
 
   UserModel({
@@ -39,6 +44,11 @@ class UserModel {
     required this.email,
     required this.role,
     this.studentId,
+    this.coreCompetencies = const [],
+    this.bio = '',
+    this.linkedinUrl,
+    this.githubUrl,
+    this.experience = const [],
     required this.createdAt,
   });
 
@@ -50,6 +60,11 @@ class UserModel {
       email: map['email'] ?? '',
       role: _roleFromString(map['role'] ?? 'student'),
       studentId: map['studentId'],
+      coreCompetencies: List<String>.from(map['coreCompetencies'] ?? []),
+      bio: map['bio'] ?? '',
+      linkedinUrl: map['linkedinUrl'],
+      githubUrl: map['githubUrl'],
+      experience: List<String>.from(map['experience'] ?? []),
       createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
@@ -66,6 +81,11 @@ class UserModel {
       'email': email,
       'role': _roleToString(role),
       'studentId': studentId,
+      'coreCompetencies': coreCompetencies,
+      'bio': bio,
+      'linkedinUrl': linkedinUrl,
+      'githubUrl': githubUrl,
+      'experience': experience,
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }
