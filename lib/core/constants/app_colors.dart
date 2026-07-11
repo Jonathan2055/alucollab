@@ -46,4 +46,8 @@ class AppColors {
         ? neutral
         : const Color(0xFF475569);
   }
+
+  static Color icon(BuildContext context) {
+    return textSecondary(context);
+  }
 }

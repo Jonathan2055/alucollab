@@ -109,8 +109,8 @@ class _CommandCenterTab extends StatelessWidget {
                     return Badge(
                       isLabelVisible: count > 0,
                       label: Text('$count'),
-                      child: const Icon(Icons.notifications_none_rounded,
-                          color: AppColors.neutral),
+                      child: Icon(Icons.notifications_none_rounded,
+                          color: AppColors.icon(context)),
                     );
                   },
                 ),
@@ -269,10 +269,10 @@ class _CommandCenterTab extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Text(
+                        Text(
                           'Startup',
                           style: TextStyle(
-                            color: AppColors.neutral,
+                            color: AppColors.textSecondary(context),
                             fontSize: 12,
                           ),
                         ),
@@ -315,7 +315,7 @@ class _CommandCenterTab extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    color: highlight ? Colors.redAccent : AppColors.neutral,
+                    color: highlight ? Colors.redAccent : AppColors.textSecondary(context),
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
                   ),
@@ -331,8 +331,8 @@ class _CommandCenterTab extends StatelessWidget {
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(
-                    color: AppColors.neutral,
+                  style: TextStyle(
+                    color: AppColors.textSecondary(context),
                     fontSize: 12,
                   ),
                 ),
@@ -394,7 +394,7 @@ class _CommandCenterTab extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: AppColors.neutral),
+            Icon(Icons.chevron_right, color: AppColors.icon(context)),
           ],
         ),
       ),
@@ -475,10 +475,17 @@ class _ProfileTab extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.dark_mode_outlined, color: AppColors.neutral, size: 20),
+                      Icon(
+                        themeProvider.isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                        color: AppColors.icon(context),
+                        size: 20,
+                      ),
                       const SizedBox(width: 14),
                       Expanded(
-                        child: Text('Dark Mode', style: TextStyle(color: AppColors.textPrimary(context))),
+                        child: Text(
+                          themeProvider.isDark ? 'Dark Mode' : 'Light Mode',
+                          style: TextStyle(color: AppColors.textPrimary(context)),
+                        ),
                       ),
                       Switch(
                         value: themeProvider.isDark,

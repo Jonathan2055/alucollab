@@ -142,8 +142,8 @@ class _HomeTab extends StatelessWidget {
                     return Badge(
                       isLabelVisible: count > 0,
                       label: Text('$count'),
-                      child: const Icon(Icons.notifications_none_rounded,
-                          color: AppColors.neutral),
+                      child: Icon(Icons.notifications_none_rounded,
+                          color: AppColors.icon(context)),
                     );
                   },
                 ),
@@ -496,10 +496,17 @@ class _ProfileTab extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.dark_mode_outlined, color: AppColors.neutral, size: 20),
+                      Icon(
+                        themeProvider.isDark ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                        color: AppColors.textSecondary(context),
+                        size: 20,
+                      ),
                       const SizedBox(width: 14),
                       Expanded(
-                        child: Text('Dark Mode', style: TextStyle(color: AppColors.textPrimary(context))),
+                        child: Text(
+                          themeProvider.isDark ? 'Dark Mode' : 'Light Mode',
+                          style: TextStyle(color: AppColors.textPrimary(context)),
+                        ),
                       ),
                       Switch(
                         value: themeProvider.isDark,
