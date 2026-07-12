@@ -81,7 +81,7 @@ class _PostOpportunityScreenState extends State<PostOpportunityScreen> {
       if (!mounted) return;
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('✅ Opportunity posted successfully')),
+        const SnackBar(content: Text('Opportunity posted successfully')),
       );
     } catch (e) {
       if (!mounted) return;
@@ -226,7 +226,7 @@ class _PostOpportunityScreenState extends State<PostOpportunityScreen> {
                   child: _isLoading
                       ? const SizedBox(height: 20, width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.black))
-                      : const Text('▶ Post Internship',
+                      : const Text('▶ Post Opportunity',
                           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                 ),
               ),

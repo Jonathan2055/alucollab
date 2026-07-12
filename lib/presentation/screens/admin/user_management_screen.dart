@@ -8,15 +8,55 @@ class UserManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _deleteUser(String userId, String name) async {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete user'),
+          content: Text('Are you sure you want to delete $name? This cannot be undone.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Delete'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed != true) return;
+      try {
+        await FirebaseFirestore.instance.collection('users').doc(userId).delete();
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$name deleted successfully.')),
+          );
+        }
+      } catch (error) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Unable to delete $name: ${error.toString()}'),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
+      }
+    }
+
     return Scaffold(
       backgroundColor: AppColors.background(context),
       appBar: AppBar(
         backgroundColor: AppColors.background(context),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: Icon(Icons.arrow_back, color: AppColors.textPrimary(context)),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text('User Management', style: TextStyle(color: Colors.white)),
+        title: Text('User Management', style: TextStyle(color: AppColors.textPrimary(context))),
         elevation: 0,
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -58,8 +98,9 @@ class UserManagementScreen extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1E293B),
+                  color: AppColors.surface(context),
                   borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.border(context)),
                 ),
                 child: Row(
                   children: [
@@ -77,9 +118,9 @@ class UserManagementScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(user.fullName,
-                              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                              style: TextStyle(color: AppColors.textPrimary(context), fontWeight: FontWeight.w600)),
                           Text(user.email,
-                              style: const TextStyle(color: AppColors.neutral, fontSize: 12)),
+                              style: TextStyle(color: AppColors.textSecondary(context), fontSize: 12)),
                         ],
                       ),
                     ),
@@ -94,6 +135,12 @@ class UserManagementScreen extends StatelessWidget {
                         user.role == UserRole.admin ? 'Admin' : 'Student',
                         style: TextStyle(color: roleColor, fontSize: 11, fontWeight: FontWeight.bold),
                       ),
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                      onPressed: () => _deleteUser(docs[index].id, user.fullName),
+                      tooltip: 'Delete user',
                     ),
                   ],
                 ),
